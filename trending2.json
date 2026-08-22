@@ -1,0 +1,22 @@
+[
+  {"url": "https://ideogram.ai", "name": "Ideogram", "description": "AI image generation with accurate text rendering", "category": "AI"},
+  {"url": "https://krea.ai", "name": "Krea", "description": "Real-time AI image generation and enhancement", "category": "AI"},
+  {"url": "https://photoroom.com", "name": "Photoroom", "description": "AI background removal and product photo editing", "category": "AI"},
+  {"url": "https://mercury.com", "name": "Mercury", "description": "Banking for startups with powerful financial tools", "category": "SaaS"},
+  {"url": "https://resend.com", "name": "Resend", "description": "Email API for developers with great DX", "category": "Dev Tools"},
+  {"url": "https://inngest.com", "name": "Inngest", "description": "Durable workflows and background jobs for devs", "category": "Dev Tools"},
+  {"url": "https://trigger.dev", "name": "Trigger.dev", "description": "Open source background jobs framework", "category": "Dev Tools"},
+  {"url": "https://openrouter.ai", "name": "OpenRouter", "description": "Unified API for accessing 100+ LLMs", "category": "AI"},
+  {"url": "https://together.ai", "name": "Together AI", "description": "Fast inference and training for open-source LLMs", "category": "AI"},
+  {"url": "https://replicate.com", "name": "Replicate", "description": "Run and fine-tune open-source models with an API", "category": "AI"},
+  {"url": "https://modal.com", "name": "Modal", "description": "Cloud platform for running AI and data workloads", "category": "Dev Tools"},
+  {"url": "https://fly.io", "name": "Fly.io", "description": "Deploy app servers close to your users worldwide", "category": "Dev Tools"},
+  {"url": "https://encore.dev", "name": "Encore", "description": "Backend development framework with built-in infra", "category": "Dev Tools"},
+  {"url": "https://convex.dev", "name": "Convex", "description": "Reactive backend-as-a-service for modern apps", "category": "Dev Tools"},
+  {"url": "https://drizzle.team", "name": "Drizzle ORM", "description": "TypeScript ORM that feels like writing SQL", "category": "Dev Tools"},
+  {"url": "https://bun.sh", "name": "Bun", "description": "Fast all-in-one JavaScript runtime and toolkit", "category": "Dev Tools"},
+  {"url": "https://astro.build", "name": "Astro", "description": "Build fast, content-focused websites with less JS", "category": "Dev Tools"},
+  {"url": "https://dub.co", "name": "Dub", "description": "Open source link management and analytics", "category": "Marketing"},
+  {"url": "https://plausible.io", "name": "Plausible", "description": "Simple, privacy-friendly web analytics", "category": "Marketing"},
+  {"url": "https://posthog.com", "name": "PostHog", "description": "Open source product analytics and feature flags", "category": "SaaS"}
+]

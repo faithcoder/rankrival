@@ -1,0 +1,536 @@
+[
+  {
+    "url": "https://chat.openai.com",
+    "name": "ChatGPT",
+    "description": "Conversational AI assistant by OpenAI",
+    "category": "AI"
+  },
+  {
+    "url": "https://claude.ai",
+    "name": "Claude",
+    "description": "AI assistant by Anthropic for analysis and writing",
+    "category": "AI"
+  },
+  {
+    "url": "https://midjourney.com",
+    "name": "Midjourney",
+    "description": "AI-powered image generation from text prompts",
+    "category": "AI"
+  },
+  {
+    "url": "https://jasper.ai",
+    "name": "Jasper",
+    "description": "AI content creation platform for marketing teams",
+    "category": "AI"
+  },
+  {
+    "url": "https://copy.ai",
+    "name": "Copy.ai",
+    "description": "AI-powered copywriting and content generation",
+    "category": "AI"
+  },
+  {
+    "url": "https://perplexity.ai",
+    "name": "Perplexity",
+    "description": "AI-powered search engine with cited answers",
+    "category": "AI"
+  },
+  {
+    "url": "https://descript.com",
+    "name": "Descript",
+    "description": "AI video and podcast editing tool",
+    "category": "AI"
+  },
+  {
+    "url": "https://runwayml.com",
+    "name": "Runway",
+    "description": "AI-powered creative tools for video generation",
+    "category": "AI"
+  },
+  {
+    "url": "https://elevenlabs.io",
+    "name": "ElevenLabs",
+    "description": "AI voice generation and text-to-speech platform",
+    "category": "AI"
+  },
+  {
+    "url": "https://synthesia.io",
+    "name": "Synthesia",
+    "description": "Create AI videos with virtual avatars",
+    "category": "AI"
+  },
+  {
+    "url": "https://otter.ai",
+    "name": "Otter.ai",
+    "description": "AI meeting transcription and note-taking",
+    "category": "AI"
+  },
+  {
+    "url": "https://fireflies.ai",
+    "name": "Fireflies.ai",
+    "description": "AI meeting assistant that records and transcribes",
+    "category": "AI"
+  },
+  {
+    "url": "https://gamma.app",
+    "name": "Gamma",
+    "description": "AI-powered presentation and document creation",
+    "category": "AI"
+  },
+  {
+    "url": "https://tome.app",
+    "name": "Tome",
+    "description": "AI-powered storytelling and presentation tool",
+    "category": "AI"
+  },
+  {
+    "url": "https://beautiful.ai",
+    "name": "Beautiful.ai",
+    "description": "AI-powered presentation design tool",
+    "category": "AI"
+  },
+  {
+    "url": "https://cursor.sh",
+    "name": "Cursor",
+    "description": "AI-first code editor built for pair programming",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://github.com/features/copilot",
+    "name": "GitHub Copilot",
+    "description": "AI pair programmer that writes code suggestions",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://vercel.com",
+    "name": "Vercel",
+    "description": "Platform for frontend frameworks and static sites",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://supabase.com",
+    "name": "Supabase",
+    "description": "Open source Firebase alternative with Postgres",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://planetscale.com",
+    "name": "PlanetScale",
+    "description": "Serverless MySQL database platform",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://railway.app",
+    "name": "Railway",
+    "description": "Instant deployment platform for apps and databases",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://render.com",
+    "name": "Render",
+    "description": "Cloud platform for building and running apps",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://linear.app",
+    "name": "Linear",
+    "description": "Streamlined issue tracking and project management",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://postman.com",
+    "name": "Postman",
+    "description": "API development and collaboration platform",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://replit.com",
+    "name": "Replit",
+    "description": "Online IDE and code collaboration platform",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://codeium.com",
+    "name": "Codeium",
+    "description": "Free AI-powered code completion and chat",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://warp.dev",
+    "name": "Warp",
+    "description": "Modern terminal with AI and team features",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://retool.com",
+    "name": "Retool",
+    "description": "Build internal tools remarkably fast",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://neon.tech",
+    "name": "Neon",
+    "description": "Serverless Postgres with branching and autoscaling",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://turso.tech",
+    "name": "Turso",
+    "description": "Edge SQLite database for modern apps",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://notion.so",
+    "name": "Notion",
+    "description": "All-in-one workspace for notes, docs, and projects",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://airtable.com",
+    "name": "Airtable",
+    "description": "Spreadsheet-database hybrid for teams",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://coda.io",
+    "name": "Coda",
+    "description": "Doc that brings words and data together",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://loom.com",
+    "name": "Loom",
+    "description": "Video messaging for work",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://cal.com",
+    "name": "Cal.com",
+    "description": "Open source scheduling infrastructure",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://calendly.com",
+    "name": "Calendly",
+    "description": "Automated scheduling platform",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://todoist.com",
+    "name": "Todoist",
+    "description": "Task management and to-do list app",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://obsidian.md",
+    "name": "Obsidian",
+    "description": "Knowledge base with linked thinking",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://roamresearch.com",
+    "name": "Roam Research",
+    "description": "Note-taking tool for networked thought",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://superhuman.com",
+    "name": "Superhuman",
+    "description": "The fastest email experience ever made",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://raycast.com",
+    "name": "Raycast",
+    "description": "Productivity launcher and command palette for Mac",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://miro.com",
+    "name": "Miro",
+    "description": "Online collaborative whiteboard platform",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://whimsical.com",
+    "name": "Whimsical",
+    "description": "Visual workspace for flowcharts and wireframes",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://pitch.com",
+    "name": "Pitch",
+    "description": "Collaborative presentation software",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://tally.so",
+    "name": "Tally",
+    "description": "Free form builder like Notion",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://1password.com",
+    "name": "1Password",
+    "description": "Password manager and digital vault",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://ticktick.com",
+    "name": "TickTick",
+    "description": "Task management and habit tracking app",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://figma.com",
+    "name": "Figma",
+    "description": "Collaborative interface design tool",
+    "category": "Design"
+  },
+  {
+    "url": "https://framer.com",
+    "name": "Framer",
+    "description": "Design and publish stunning sites with ease",
+    "category": "Design"
+  },
+  {
+    "url": "https://canva.com",
+    "name": "Canva",
+    "description": "Online graphic design and visual communication",
+    "category": "Design"
+  },
+  {
+    "url": "https://webflow.com",
+    "name": "Webflow",
+    "description": "Visual web design and development platform",
+    "category": "Design"
+  },
+  {
+    "url": "https://maze.co",
+    "name": "Maze",
+    "description": "User testing and product research platform",
+    "category": "Design"
+  },
+  {
+    "url": "https://hotjar.com",
+    "name": "Hotjar",
+    "description": "Heatmaps, recordings, and user feedback",
+    "category": "Design"
+  },
+  {
+    "url": "https://zeplin.io",
+    "name": "Zeplin",
+    "description": "Design handoff and collaboration tool",
+    "category": "Design"
+  },
+  {
+    "url": "https://invisionapp.com",
+    "name": "InVision",
+    "description": "Digital product design and prototyping platform",
+    "category": "Design"
+  },
+  {
+    "url": "https://abstract.com",
+    "name": "Abstract",
+    "description": "Design version control and collaboration",
+    "category": "Design"
+  },
+  {
+    "url": "https://stripe.com",
+    "name": "Stripe",
+    "description": "Payments infrastructure for the internet",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://shopify.com",
+    "name": "Shopify",
+    "description": "E-commerce platform for online stores",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://intercom.com",
+    "name": "Intercom",
+    "description": "Customer messaging and support platform",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://hubspot.com",
+    "name": "HubSpot",
+    "description": "CRM, marketing, sales, and service software",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://slack.com",
+    "name": "Slack",
+    "description": "Business communication and messaging platform",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://zoom.us",
+    "name": "Zoom",
+    "description": "Video conferencing and virtual meetings",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://typeform.com",
+    "name": "Typeform",
+    "description": "Interactive forms, surveys, and quizzes",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://bubble.io",
+    "name": "Bubble",
+    "description": "No-code platform for building web apps",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://zapier.com",
+    "name": "Zapier",
+    "description": "Automation that connects your favorite apps",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://make.com",
+    "name": "Make",
+    "description": "Visual platform for building automated workflows",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://monday.com",
+    "name": "Monday.com",
+    "description": "Work operating system for teams",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://clickup.com",
+    "name": "ClickUp",
+    "description": "All-in-one productivity and project management",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://asana.com",
+    "name": "Asana",
+    "description": "Work management platform for teams",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://freshdesk.com",
+    "name": "Freshdesk",
+    "description": "Customer support and helpdesk software",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://crisp.chat",
+    "name": "Crisp",
+    "description": "Live chat and customer messaging platform",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://mailerlite.com",
+    "name": "MailerLite",
+    "description": "Email marketing and automation platform",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://convertkit.com",
+    "name": "ConvertKit",
+    "description": "Email marketing for creators",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://semrush.com",
+    "name": "SEMrush",
+    "description": "SEO and competitive analysis toolkit",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://ahrefs.com",
+    "name": "Ahrefs",
+    "description": "SEO tools and resources for link building",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://buffer.com",
+    "name": "Buffer",
+    "description": "Social media management and scheduling",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://hootsuite.com",
+    "name": "Hootsuite",
+    "description": "Social media management platform",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://beehiiv.com",
+    "name": "Beehiiv",
+    "description": "Newsletter platform for creators and publishers",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://substack.com",
+    "name": "Substack",
+    "description": "Newsletter and publishing platform for writers",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://gumroad.com",
+    "name": "Gumroad",
+    "description": "Sell digital products and memberships",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://lemonsqueezy.com",
+    "name": "Lemon Squeezy",
+    "description": "Sell digital products with built-in payments",
+    "category": "Marketing"
+  },
+  {
+    "url": "https://excalidraw.com",
+    "name": "Excalidraw",
+    "description": "Virtual whiteboard for hand-drawn diagrams",
+    "category": "Design"
+  },
+  {
+    "url": "https://grammarly.com",
+    "name": "Grammarly",
+    "description": "Writing assistant and grammar checker",
+    "category": "Productivity"
+  },
+  {
+    "url": "https://docusign.com",
+    "name": "DocuSign",
+    "description": "Electronic signature and agreement cloud",
+    "category": "SaaS"
+  },
+  {
+    "url": "https://twilio.com",
+    "name": "Twilio",
+    "description": "Cloud communications APIs for messaging and voice",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://auth0.com",
+    "name": "Auth0",
+    "description": "Identity and access management platform",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://sentry.io",
+    "name": "Sentry",
+    "description": "Application monitoring and error tracking",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://datadog.com",
+    "name": "Datadog",
+    "description": "Cloud monitoring and analytics platform",
+    "category": "Dev Tools"
+  },
+  {
+    "url": "https://cloudflare.com",
+    "name": "Cloudflare",
+    "description": "Web infrastructure and security platform",
+    "category": "Dev Tools"
+  }
+]

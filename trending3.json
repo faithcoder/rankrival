@@ -1,0 +1,11 @@
+[
+  {"url": "https://formbricks.com", "name": "Formbricks", "description": "Open source surveys and in-app feedback", "category": "SaaS"},
+  {"url": "https://infisical.com", "name": "Infisical", "description": "Open source secret management platform", "category": "Dev Tools"},
+  {"url": "https://unkey.dev", "name": "Unkey", "description": "API key management and rate limiting for devs", "category": "Dev Tools"},
+  {"url": "https://tinybird.co", "name": "Tinybird", "description": "Real-time analytics API built on ClickHouse", "category": "Dev Tools"},
+  {"url": "https://e2b.dev", "name": "E2B", "description": "Sandboxed cloud environments for AI agents", "category": "AI"},
+  {"url": "https://browserbase.com", "name": "Browserbase", "description": "Headless browser infrastructure for AI agents", "category": "AI"},
+  {"url": "https://langchain.com", "name": "LangChain", "description": "Framework for building LLM-powered applications", "category": "AI"},
+  {"url": "https://remove.bg", "name": "remove.bg", "description": "Instant AI background removal from any image", "category": "AI"},
+  {"url": "https://elevenlabs.io/voice-changer", "name": "ElevenLabs Voice", "description": "Real-time AI voice cloning and transformation", "category": "AI"}
+]

@@ -1,0 +1,22 @@
+[
+  {"url": "https://lovable.dev", "name": "Lovable", "description": "AI full-stack app builder from a single prompt", "category": "AI"},
+  {"url": "https://bolt.new", "name": "Bolt.new", "description": "Prompt, run, edit, and deploy full-stack web apps", "category": "AI"},
+  {"url": "https://v0.dev", "name": "v0", "description": "AI-powered UI component generator by Vercel", "category": "AI"},
+  {"url": "https://windsurf.com", "name": "Windsurf", "description": "AI coding IDE with deep codebase understanding", "category": "Dev Tools"},
+  {"url": "https://aider.chat", "name": "Aider", "description": "AI pair programming in your terminal", "category": "Dev Tools"},
+  {"url": "https://devin.ai", "name": "Devin", "description": "The first fully autonomous AI software engineer", "category": "AI"},
+  {"url": "https://openai.com/sora", "name": "Sora", "description": "AI video generation from text prompts by OpenAI", "category": "AI"},
+  {"url": "https://notebooklm.google.com", "name": "NotebookLM", "description": "AI-powered research and note-taking assistant", "category": "AI"},
+  {"url": "https://replit.com/agent", "name": "Replit Agent", "description": "Build and deploy apps with an AI agent", "category": "AI"},
+  {"url": "https://dualite.dev", "name": "Dualite", "description": "Convert designs and prototypes to code instantly", "category": "Dev Tools"},
+  {"url": "https://tempolabs.ai", "name": "Tempo Labs", "description": "AI-powered React UI builder with visual editing", "category": "Dev Tools"},
+  {"url": "https://roocode.com", "name": "Roo Code", "description": "AI coding agent that works in VS Code", "category": "Dev Tools"},
+  {"url": "https://cline.bot", "name": "Cline", "description": "Autonomous coding agent for VS Code", "category": "Dev Tools"},
+  {"url": "https://magicpatterns.com", "name": "Magic Patterns", "description": "Generate UI components and prototypes with AI", "category": "Design"},
+  {"url": "https://tldraw.com", "name": "tldraw", "description": "Infinite canvas SDK for building whiteboard apps", "category": "Design"},
+  {"url": "https://relume.io", "name": "Relume", "description": "AI website builder with Figma and Webflow export", "category": "Design"},
+  {"url": "https://uizard.io", "name": "Uizard", "description": "AI-powered UI design from text or screenshots", "category": "Design"},
+  {"url": "https://heygen.com", "name": "HeyGen", "description": "AI video avatar platform for marketing and training", "category": "AI"},
+  {"url": "https://pika.art", "name": "Pika", "description": "AI video generation and editing platform", "category": "AI"},
+  {"url": "https://klingai.com", "name": "Kling AI", "description": "High-quality AI video generation from text", "category": "AI"}
+]

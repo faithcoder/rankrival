@@ -1,0 +1,254 @@
+"use client";
+
+import { Fragment, useEffect, useState, useCallback } from "react";
+import { usePolling } from "@/hooks/usePolling";
+import StatsBanner from "@/components/StatsBanner";
+import BidSection, { Preset } from "@/components/BidSection";
+import TrendingBar, { TrendingItem } from "@/components/TrendingBar";
+import ActivityFeed, { ActivityItem } from "@/components/ActivityFeed";
+import LeaderboardCard, { ListingItem } from "@/components/LeaderboardCard";
+
+interface ListingsResponse {
+  listings: ListingItem[];
+}
+interface TrendingResponse {
+  trending: TrendingItem[];
+}
+interface ActivityResponse {
+  activity: ActivityItem[];
+}
+interface StatsResponse {
+  total_visitors: number;
+}
+interface OnlineResponse {
+  online: number;
+}
+
+export default function HomePage() {
+  const { data: listingsData, loading: listingsLoading } =
+    usePolling<ListingsResponse>("/api/listings", 15000);
+  const { data: trendingData } = usePolling<TrendingResponse>(
+    "/api/trending",
+    15000
+  );
+  const { data: activityData } = usePolling<ActivityResponse>(
+    "/api/activity",
+    15000
+  );
+  const { data: statsData } = usePolling<StatsResponse>("/api/stats", 30000);
+  const { data: onlineData } = usePolling<OnlineResponse>("/api/online", 30000);
+
+  const [preset, setPreset] = useState<Preset | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [pageSize, setPageSize] = useState<3 | 10 | 20>(20);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    let sessionId = localStorage.getItem("rankrival_sid");
+    if (!sessionId) {
+      sessionId =
+        Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem("rankrival_sid", sessionId);
+    }
+    const beat = () =>
+      fetch("/api/online", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      }).catch(() => {});
+    beat();
+    const id = setInterval(beat, 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  const listings = listingsData?.listings ?? [];
+  const topBid = listings.length > 0 ? listings[0].bid_amount : 0;
+  const totalPages = Math.max(1, Math.ceil(listings.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const visibleListings = listings.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+  const paginationItems: Array<number | string> = totalPages <= 7
+    ? Array.from({ length: totalPages }, (_, index) => index + 1)
+    : [
+        1,
+        ...(currentPage > 4 ? ["start-ellipsis"] : []),
+        ...Array.from(
+          { length: 5 },
+          (_, index) => Math.max(2, Math.min(totalPages - 5, currentPage - 2)) + index
+        ),
+        ...(currentPage < totalPages - 3 ? ["end-ellipsis"] : []),
+        totalPages,
+      ];
+
+  useEffect(() => {
+    setPage((current) => Math.min(current, totalPages));
+  }, [totalPages]);
+
+  const handleClaim = useCallback((l: ListingItem) => {
+    setError(null);
+    setPreset({ url: l.url, amount: Math.ceil((l.bid_amount + 500) / 100) * 100 });
+    setNotice(
+      `To take rank #${l.rank} from ${l.domain}, outbid them by at least $5.`
+    );
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const handleOutbid = useCallback(async (url: string, amount: number) => {
+    setError(null);
+    setNotice(null);
+    try {
+      const res = await fetch("/api/outbid", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url, amount }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error || "Something went wrong. Please try again.");
+        return;
+      }
+      if (json.url) {
+        window.location.href = json.url;
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    }
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-10">
+      <section className="hero-grid -mx-4 border-b border-blue-100 px-4 pb-12 pt-5 dark:border-blue-950 sm:pb-16">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-7">
+          <StatsBanner
+            online={onlineData?.online ?? 0}
+            visitors={statsData?.total_visitors ?? 0}
+            listings={listings.length}
+          />
+          <BidSection topBid={topBid} preset={preset} onOutbid={handleOutbid} />
+        </div>
+      </section>
+
+      {notice && (
+        <div className="fade-up rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-300">
+          {notice}
+        </div>
+      )}
+      {error && (
+        <div className="fade-up rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
+          {error}
+        </div>
+      )}
+
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <section className="flex min-w-0 flex-col gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-2xl font-bold tracking-tight">
+            Live leaderboard
+          </h2>
+          <label className="flex items-center gap-2 text-sm text-slate-500">
+            <span className="sr-only">Listings per page</span>
+            <select
+              value={pageSize}
+              onChange={(event) => {
+                setPageSize(Number(event.target.value) as 3 | 10 | 20);
+                setPage(1);
+              }}
+              className="rounded-xl border border-blue-100 bg-white px-3 py-2 font-medium text-slate-700 outline-none transition-colors hover:border-blue-300 focus:border-blue-500 dark:border-blue-900 dark:bg-slate-900 dark:text-slate-200"
+            >
+              <option value={3}>Top 3</option>
+              <option value={10}>Top 10</option>
+              <option value={20}>Top 20</option>
+            </select>
+          </label>
+        </div>
+
+        {listingsLoading && listings.length === 0 ? (
+          <div className="grid gap-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-20 animate-pulse rounded-2xl bg-neutral-100 dark:bg-neutral-900"
+              />
+            ))}
+          </div>
+        ) : listings.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-neutral-200 p-10 text-center text-sm text-neutral-400 dark:border-neutral-800">
+            No listings yet. Be the first to claim #1.
+          </div>
+        ) : (
+          visibleListings.map((listing) => (
+            <Fragment key={listing.id}>
+              <LeaderboardCard
+                listing={listing}
+                onClaim={handleClaim}
+              />
+              {[3, 10, 20].includes(listing.rank) && listing.rank < listings.length && (
+                <div className="my-4 flex items-center gap-4" aria-label={`End of top ${listing.rank}`}>
+                  <span className="h-px flex-1 bg-gradient-to-r from-transparent to-blue-200 dark:to-blue-900" />
+                  <span className="rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300">
+                    Top {listing.rank}
+                  </span>
+                  <span className="h-px flex-1 bg-gradient-to-l from-transparent to-blue-200 dark:to-blue-900" />
+                </div>
+              )}
+            </Fragment>
+          ))
+        )}
+
+        {listings.length > pageSize && (
+          <nav
+            className="mt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5 dark:border-slate-800"
+            aria-label="Leaderboard pagination"
+          >
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              Showing {(currentPage - 1) * pageSize + 1}–{Math.min(currentPage * pageSize, listings.length)} of {listings.length}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setPage((current) => Math.max(1, current - 1))}
+                disabled={currentPage === 1}
+                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium transition-colors hover:border-blue-300 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-700 dark:bg-slate-900"
+              >
+                Previous
+              </button>
+              {paginationItems.map((item) => typeof item === "string" ? (
+                <span key={item} className="px-1 text-slate-400" aria-hidden="true">…</span>
+              ) : (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setPage(item)}
+                  aria-current={currentPage === item ? "page" : undefined}
+                  className={`grid h-9 min-w-9 place-items-center rounded-lg px-2 text-sm font-semibold transition-colors ${
+                    currentPage === item
+                      ? "bg-blue-700 text-white"
+                      : "border border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+                disabled={currentPage === totalPages}
+                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium transition-colors hover:border-blue-300 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-700 dark:bg-slate-900"
+              >
+                Next
+              </button>
+            </div>
+          </nav>
+        )}
+      </section>
+      <aside className="flex flex-col gap-4 lg:sticky lg:top-24">
+        <TrendingBar trending={trendingData?.trending ?? []} />
+        <ActivityFeed activity={activityData?.activity ?? []} />
+      </aside>
+      </div>
+    </div>
+  );
+}
