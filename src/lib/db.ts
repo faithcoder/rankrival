@@ -342,6 +342,25 @@ export function finalizePayment(
   })();
 }
 
+export function finalizeFreeListing(
+  db: Database.Database,
+  listingId: number,
+  promotionalAmount = 500
+): boolean {
+  return db.transaction(() => {
+    const listing = db.prepare("SELECT * FROM listings WHERE id = ?").get(listingId) as Listing | undefined;
+    if (!listing || listing.paid === 1 || promotionalAmount !== 500) return false;
+
+    db.prepare(
+      "UPDATE listings SET bid_amount = ?, paid = 1, updated_at = ? WHERE id = ?"
+    ).run(promotionalAmount, new Date().toISOString(), listingId);
+    db.prepare(
+      "INSERT INTO bid_events (listing_id, amount, previous_amount, created_at) VALUES (?, ?, 0, ?)"
+    ).run(listingId, promotionalAmount, new Date().toISOString());
+    return true;
+  })();
+}
+
 export function getSiteStats(db: Database.Database): SiteStats {
   const row = db.prepare("SELECT * FROM site_stats ORDER BY id DESC LIMIT 1").get() as
     | SiteStats

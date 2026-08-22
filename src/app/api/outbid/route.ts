@@ -1,8 +1,9 @@
 import { NextRequest } from "next/server";
-import { getDb, resetHourlyClicksIfNeeded, finalizePayment, recalculateRanks, Listing } from "@/lib/db";
+import { getDb, resetHourlyClicksIfNeeded, finalizePayment, finalizeFreeListing, recalculateRanks, Listing } from "@/lib/db";
 import { isMockMode, createCheckoutSession } from "@/lib/stripe";
 import { normalizeUrl, extractDomain, validatePublicListingUrl } from "@/lib/utils";
 import { CATEGORY_SLUGS } from "@/lib/categories";
+import { isFreeListingActive } from "@/lib/promotion";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -58,6 +59,8 @@ export async function POST(req: NextRequest) {
   const identityValue = identityColumn === "url" ? url : domain;
   const identityListings = db.prepare(`SELECT * FROM listings WHERE ${identityColumn} = ? ORDER BY paid DESC, updated_at DESC`).all(identityValue) as Listing[];
   const existing = identityListings.find((listing) => listing.paid === 1);
+  const freeListing = !existing && isFreeListingActive();
+  const effectiveAmount = freeListing ? MIN_BID : amount;
   const effectiveCategory = existing?.category || requestedCategory;
   const pending = identityListings.find((listing) => listing.paid === 0);
   if (pending) {
@@ -69,7 +72,7 @@ export async function POST(req: NextRequest) {
   const currentTop = db.prepare(
     "SELECT * FROM listings WHERE paid = 1 AND category = ? AND id != ? ORDER BY bid_amount DESC, created_at ASC LIMIT 1"
   ).get(effectiveCategory, existing?.id ?? -1) as Listing | undefined;
-  if (currentTop && amount > currentTop.bid_amount && amount < currentTop.bid_amount + 500) {
+  if (currentTop && effectiveAmount > currentTop.bid_amount && effectiveAmount < currentTop.bid_amount + 500) {
     return Response.json({ error: `To claim #1 you must outbid ${currentTop.domain} by at least $5 ($${(currentTop.bid_amount + 500) / 100})` }, { status: 400 });
   }
 
@@ -79,18 +82,18 @@ export async function POST(req: NextRequest) {
   const now = new Date().toISOString();
 
   if (existing) {
-    if (existing.bid_amount >= amount) {
+    if (existing.bid_amount >= effectiveAmount) {
       return Response.json(
         { error: "Your new bid must be higher than your current bid" },
         { status: 400 }
       );
     }
     previousAmount = existing.bid_amount;
-    chargeAmount = amount - existing.bid_amount;
+    chargeAmount = effectiveAmount - existing.bid_amount;
     listingId = existing.id;
   } else {
     previousAmount = 0;
-    chargeAmount = amount;
+    chargeAmount = effectiveAmount;
 
     const info = db
       .prepare(
@@ -102,7 +105,7 @@ export async function POST(req: NextRequest) {
         domain,
         domain.split(".")[0],
         body.description && typeof body.description === "string" ? body.description.trim().slice(0, 240) : null,
-        amount,
+        effectiveAmount,
         now,
         now,
         effectiveCategory
@@ -110,14 +113,26 @@ export async function POST(req: NextRequest) {
     listingId = Number(info.lastInsertRowid);
   }
 
+  if (freeListing) {
+    if (!finalizeFreeListing(db, listingId, MIN_BID)) {
+      db.prepare("DELETE FROM listings WHERE id = ? AND paid = 0").run(listingId);
+      return Response.json({ error: "Unable to activate the free listing" }, { status: 500 });
+    }
+    recalculateRanks(db);
+    return Response.json({
+      free: true,
+      url: `/success?free=1&domain=${encodeURIComponent(domain)}&amount=${MIN_BID}`,
+    });
+  }
+
   if (isMockMode()) {
-    finalizePayment(db, listingId, amount, previousAmount);
+    finalizePayment(db, listingId, effectiveAmount, previousAmount);
     recalculateRanks(db);
     return Response.json({
       mock: true,
       url: `/success?session_id=mock_${listingId}&domain=${encodeURIComponent(
         domain
-      )}&amount=${amount}`,
+      )}&amount=${effectiveAmount}`,
     });
   }
 
@@ -126,7 +141,7 @@ export async function POST(req: NextRequest) {
       listingId,
       domain,
       chargeAmount,
-      fullAmount: amount,
+      fullAmount: effectiveAmount,
       previousAmount,
     });
     db.prepare("UPDATE listings SET stripe_session_id = ? WHERE id = ?").run(

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { CATEGORIES, CategorySlug } from "@/lib/categories";
+import { freeListingUntil } from "@/lib/promotion";
 
 const MIN = 500;
 const MAX = 99_999_900;
@@ -29,6 +30,19 @@ export default function BidSection({
   const [amount, setAmount] = useState(() => Math.max(MIN, wholeDollar(topBid + 500)));
   const [submitting, setSubmitting] = useState(false);
   const [category, setCategory] = useState<CategorySlug>(activeCategory === "all" ? "other" : activeCategory);
+  const [secondsLeft, setSecondsLeft] = useState(0);
+
+  useEffect(() => {
+    const update = () => setSecondsLeft(Math.max(0, Math.ceil((Date.parse(freeListingUntil()) - Date.now()) / 1000)));
+    update();
+    const timer = window.setInterval(update, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const promotionActive = secondsLeft > 0;
+  const hours = Math.floor(secondsLeft / 3600);
+  const minutes = Math.floor((secondsLeft % 3600) / 60);
+  const seconds = secondsLeft % 60;
 
   useEffect(() => {
     if (activeCategory !== "all") setCategory(activeCategory);
@@ -66,6 +80,11 @@ export default function BidSection({
 
   return (
     <div className="fade-up flex w-full flex-col items-center gap-6">
+      {promotionActive && (
+        <div className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-center text-sm font-semibold text-emerald-700 shadow-sm dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">
+          Launch offer: new listings are free at the $5 promotional rank for {hours}h {String(minutes).padStart(2, "0")}m {String(seconds).padStart(2, "0")}s
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-center gap-3 text-center">
         <h1 className="text-4xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-5xl">
           Rank your rival #1 for
@@ -132,7 +151,9 @@ export default function BidSection({
         {CATEGORIES.map(([slug, label]) => <option key={slug} value={slug}>{label}</option>)}
       </select>
       <p className="-mt-3 text-center text-sm text-slate-500 dark:text-slate-400">
-        Start at $5. Bids below #1 land at the highest position that amount can secure.
+        {promotionActive
+          ? "New websites are listed free at $5 during the offer. Existing listing upgrades still require payment."
+          : "Start at $5. Bids below #1 land at the highest position that amount can secure."}
       </p>
     </div>
   );

@@ -14,6 +14,7 @@ const sections = [
     "Enter the same website or @handle again to raise that listing. The new bid must be at least $1 above its current bid, and you pay only the difference. Someone else cannot take your listing by paying only that difference.",
     "App Store, Play Store, GitHub, and similar platform links are identified by their path, so separate apps do not share a bid. Tracking query strings are ignored.",
     "Upvotes affect the Top Upvoted panel only. They never change Top Trend or paid leaderboard positions, which remain determined by hourly clicks and category bids respectively.",
+    "Temporary promotions may waive payment for new listings. Promotional listings receive the advertised fixed bid amount; upgrading an existing listing still requires payment.",
   ]},
   { title: "What you can list", items: [
     "A product website or an X @handle.",
