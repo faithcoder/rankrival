@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { formatMoney, formatClicks, timeAgo } from "@/lib/utils";
+import { categoryLabel } from "@/lib/categories";
 
 export interface ListingItem {
   id: number;
@@ -15,6 +17,9 @@ export interface ListingItem {
   created_at: string;
   updated_at: string;
   paid: number;
+  category: string;
+  upvotes: number;
+  has_upvoted: boolean;
 }
 
 const rankStyles: Record<number, { ring: string; badge: string; label: string; surface: string }> = {
@@ -41,10 +46,13 @@ const rankStyles: Record<number, { ring: string; badge: string; label: string; s
 export default function LeaderboardCard({
   listing,
   onClaim,
+  onUpvote,
 }: {
   listing: ListingItem;
   onClaim: (listing: ListingItem) => void;
+  onUpvote: (listing: ListingItem) => Promise<void>;
 }) {
+  const [voting, setVoting] = useState(false);
   const style = rankStyles[listing.rank] || {
     ring: "border-neutral-200 dark:border-neutral-800",
     badge: "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400",
@@ -98,11 +106,31 @@ export default function LeaderboardCard({
           </p>
         )}
         <div className="mt-1 flex items-center gap-2 text-xs text-neutral-400">
+          <span className="max-w-36 truncate rounded-md bg-blue-50 px-1.5 py-0.5 font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+            {categoryLabel(listing.category)}
+          </span>
           <span>listed {timeAgo(listing.created_at)}</span>
-          <span className="h-1.5 w-1.5 rounded-full bg-orange-500" aria-hidden="true" />
+          <span className="relative flex h-2 w-2" aria-hidden="true">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-70 motion-reduce:animate-none" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+          </span>
           <span className="number font-medium text-neutral-600 dark:text-neutral-300">
             {formatClicks(listing.clicks)} clicks
           </span>
+          <button
+            type="button"
+            disabled={voting}
+            aria-pressed={listing.has_upvoted}
+            aria-label={`${listing.has_upvoted ? "Remove upvote from" : "Upvote"} ${listing.domain}`}
+            onClick={async () => {
+              setVoting(true);
+              await onUpvote(listing);
+              setVoting(false);
+            }}
+            className={`number inline-flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-0.5 font-semibold transition-colors disabled:cursor-wait disabled:opacity-50 ${listing.has_upvoted ? "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300" : "text-neutral-500 hover:bg-orange-50 hover:text-orange-700 dark:hover:bg-orange-950"}`}
+          >
+            <span aria-hidden="true">▲</span>{listing.upvotes}
+          </button>
         </div>
       </div>
 

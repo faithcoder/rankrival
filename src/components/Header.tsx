@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-slate-50/90 backdrop-blur dark:bg-slate-950/90">
-      <div className="mx-auto flex h-20 max-w-[1220px] items-center justify-between px-4">
+      <div className="mx-auto flex h-20 max-w-[1500px] items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-blue-700 text-white shadow-sm">
             <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 19V9m5 10V5m5 14v-7m4 7H3" /></svg>

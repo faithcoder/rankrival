@@ -1,7 +1,5 @@
 "use client";
 
-import { formatClicks } from "@/lib/utils";
-
 export interface TrendingItem {
   id: number;
   url: string;
@@ -51,7 +49,7 @@ export default function TrendingBar({ trending }: { trending: TrendingItem[] }) 
                 <span className="truncate text-sm font-medium">{item.domain}</span>
               </div>
               <span className="number ml-auto shrink-0 text-sm text-neutral-400">
-                {formatClicks(item.clicks_this_hour)}/h
+                {item.clicks_this_hour.toLocaleString("en-US")}/h
               </span>
             </div>
           </a>

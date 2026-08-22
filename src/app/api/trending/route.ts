@@ -6,7 +6,6 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const db = getDb();
   resetHourlyClicksIfNeeded(db);
-
   const trending = db
     .prepare(
       `SELECT id, url, domain, handle, bid_amount, clicks, clicks_this_hour, rank

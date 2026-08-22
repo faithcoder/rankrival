@@ -16,6 +16,7 @@ export interface Listing {
   updated_at: string;
   stripe_session_id: string | null;
   paid: number;
+  category: string;
 }
 
 export interface BidEvent {
@@ -34,6 +35,20 @@ export interface SiteStats {
 }
 
 const globalForDb = globalThis as unknown as { __rankrival_db?: Database.Database };
+
+function ensureUpvoteSchema(db: Database.Database): void {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS listing_upvotes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      listing_id INTEGER NOT NULL,
+      voter_hash TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      UNIQUE(listing_id, voter_hash)
+    );
+    CREATE INDEX IF NOT EXISTS idx_listing_upvotes_listing ON listing_upvotes(listing_id);
+    CREATE INDEX IF NOT EXISTS idx_listing_upvotes_created ON listing_upvotes(created_at);
+  `);
+}
 
 function createDb(): Database.Database {
   const dataDir = path.join(process.cwd(), "data");
@@ -58,6 +73,7 @@ function createDb(): Database.Database {
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
       stripe_session_id TEXT,
+      category TEXT NOT NULL DEFAULT 'other',
       paid INTEGER NOT NULL DEFAULT 0
     );
 
@@ -76,6 +92,17 @@ function createDb(): Database.Database {
       referrer TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS listing_upvotes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      listing_id INTEGER NOT NULL,
+      voter_hash TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      UNIQUE(listing_id, voter_hash)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_listing_upvotes_listing ON listing_upvotes(listing_id);
+    CREATE INDEX IF NOT EXISTS idx_listing_upvotes_created ON listing_upvotes(created_at);
+
     CREATE TABLE IF NOT EXISTS site_stats (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       total_visitors INTEGER NOT NULL DEFAULT 0,
@@ -89,6 +116,11 @@ function createDb(): Database.Database {
     );
   `);
 
+  const listingColumns = db.prepare("PRAGMA table_info(listings)").all() as { name: string }[];
+  if (!listingColumns.some((column) => column.name === "category")) {
+    db.exec("ALTER TABLE listings ADD COLUMN category TEXT NOT NULL DEFAULT 'other'");
+  }
+
   return db;
 }
 
@@ -96,6 +128,7 @@ export function getDb(): Database.Database {
   if (!globalForDb.__rankrival_db) {
     globalForDb.__rankrival_db = createDb();
   }
+  ensureUpvoteSchema(globalForDb.__rankrival_db);
   return globalForDb.__rankrival_db;
 }
 

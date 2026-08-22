@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { formatMoney } from "@/lib/utils";
+import { CATEGORIES, CategorySlug } from "@/lib/categories";
 
 const MIN = 500;
 const MAX = 99_999_900;
@@ -11,20 +11,28 @@ const wholeDollar = (value: number) => Math.ceil(value / 100) * 100;
 export interface Preset {
   url: string;
   amount: number;
+  category: CategorySlug;
 }
 
 export default function BidSection({
   topBid,
   preset,
   onOutbid,
+  activeCategory,
 }: {
   topBid: number;
   preset: Preset | null;
-  onOutbid: (url: string, amount: number) => Promise<void>;
+  onOutbid: (url: string, amount: number, category: CategorySlug) => Promise<void>;
+  activeCategory: CategorySlug | "all";
 }) {
   const [url, setUrl] = useState("");
   const [amount, setAmount] = useState(() => Math.max(MIN, wholeDollar(topBid + 500)));
   const [submitting, setSubmitting] = useState(false);
+  const [category, setCategory] = useState<CategorySlug>(activeCategory === "all" ? "other" : activeCategory);
+
+  useEffect(() => {
+    if (activeCategory !== "all") setCategory(activeCategory);
+  }, [activeCategory]);
 
   useEffect(() => {
     setAmount((prev) => {
@@ -37,6 +45,7 @@ export default function BidSection({
     if (preset) {
       setUrl(preset.url);
       setAmount(wholeDollar(preset.amount));
+      setCategory(preset.category);
     }
   }, [preset]);
 
@@ -49,10 +58,10 @@ export default function BidSection({
       e.preventDefault();
       if (!url.trim() || submitting) return;
       setSubmitting(true);
-      await onOutbid(url, amount);
+      await onOutbid(url, amount, category);
       setSubmitting(false);
     },
-    [url, amount, submitting, onOutbid]
+    [url, amount, category, submitting, onOutbid]
   );
 
   return (
@@ -98,6 +107,14 @@ export default function BidSection({
             placeholder="Enter a website URL or X @handle"
             className="h-12 min-w-0 flex-1 bg-transparent px-1 text-base outline-none placeholder:text-neutral-400"
           />
+          <select
+            value={category}
+            onChange={(event) => setCategory(event.target.value as CategorySlug)}
+            aria-label="Listing category"
+            className="hidden max-w-52 cursor-pointer border-l border-blue-100 bg-transparent px-3 text-sm text-slate-600 outline-none dark:border-blue-900 dark:text-slate-300 sm:block"
+          >
+            {CATEGORIES.map(([slug, label]) => <option key={slug} value={slug}>{label}</option>)}
+          </select>
           <button
             type="submit"
             disabled={submitting}
@@ -106,6 +123,14 @@ export default function BidSection({
             {submitting ? "Processing…" : "Rank"}
           </button>
         </form>
+      <select
+        value={category}
+        onChange={(event) => setCategory(event.target.value as CategorySlug)}
+        aria-label="Listing category"
+        className="-mt-3 w-full max-w-sm cursor-pointer rounded-xl border border-blue-100 bg-white px-3 py-2 text-sm text-slate-600 outline-none dark:border-blue-900 dark:bg-slate-900 dark:text-slate-300 sm:hidden"
+      >
+        {CATEGORIES.map(([slug, label]) => <option key={slug} value={slug}>{label}</option>)}
+      </select>
       <p className="-mt-3 text-center text-sm text-slate-500 dark:text-slate-400">
         Start at $5. Bids below #1 land at the highest position that amount can secure.
       </p>

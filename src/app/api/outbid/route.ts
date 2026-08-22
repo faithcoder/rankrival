@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getDb, resetHourlyClicksIfNeeded, finalizePayment, recalculateRanks, Listing } from "@/lib/db";
 import { isMockMode, createCheckoutSession } from "@/lib/stripe";
 import { normalizeUrl, extractDomain, validatePublicListingUrl } from "@/lib/utils";
+import { CATEGORY_SLUGS } from "@/lib/categories";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
   const attempt = attempts.get(client);
   if (attempt && attempt.reset > nowMs && attempt.count >= 10) return Response.json({ error: "Too many attempts. Please wait a minute." }, { status: 429 });
   attempts.set(client, attempt && attempt.reset > nowMs ? { ...attempt, count: attempt.count + 1 } : { count: 1, reset: nowMs + 60_000 });
-  let body: { url?: string; amount?: number; description?: string };
+  let body: { url?: string; amount?: number; description?: string; category?: string };
   try {
     body = await req.json();
   } catch {
@@ -25,6 +26,7 @@ export async function POST(req: NextRequest) {
 
   const url = typeof body.url === "string" ? normalizeUrl(body.url) : "";
   const amount = Number(body.amount);
+  const requestedCategory = typeof body.category === "string" ? body.category : "";
 
   if (!url || url.length > 2048 || !/^https?:\/\/[^\s]+/.test(url)) {
     return Response.json({ error: "Please enter a valid URL" }, { status: 400 });
@@ -43,6 +45,10 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Bids must use $1 increments" }, { status: 400 });
   }
 
+  if (!CATEGORY_SLUGS.has(requestedCategory)) {
+    return Response.json({ error: "Please select a valid category" }, { status: 400 });
+  }
+
   const domain = extractDomain(url);
   const db = getDb();
   resetHourlyClicksIfNeeded(db);
@@ -52,6 +58,7 @@ export async function POST(req: NextRequest) {
   const identityValue = identityColumn === "url" ? url : domain;
   const identityListings = db.prepare(`SELECT * FROM listings WHERE ${identityColumn} = ? ORDER BY paid DESC, updated_at DESC`).all(identityValue) as Listing[];
   const existing = identityListings.find((listing) => listing.paid === 1);
+  const effectiveCategory = existing?.category || requestedCategory;
   const pending = identityListings.find((listing) => listing.paid === 0);
   if (pending) {
     const isFresh = Date.now() - new Date(pending.updated_at).getTime() < 30 * 60 * 1000;
@@ -60,8 +67,8 @@ export async function POST(req: NextRequest) {
   }
 
   const currentTop = db.prepare(
-    "SELECT * FROM listings WHERE paid = 1 AND id != ? ORDER BY bid_amount DESC, created_at ASC LIMIT 1"
-  ).get(existing?.id ?? -1) as Listing | undefined;
+    "SELECT * FROM listings WHERE paid = 1 AND category = ? AND id != ? ORDER BY bid_amount DESC, created_at ASC LIMIT 1"
+  ).get(effectiveCategory, existing?.id ?? -1) as Listing | undefined;
   if (currentTop && amount > currentTop.bid_amount && amount < currentTop.bid_amount + 500) {
     return Response.json({ error: `To claim #1 you must outbid ${currentTop.domain} by at least $5 ($${(currentTop.bid_amount + 500) / 100})` }, { status: 400 });
   }
@@ -87,8 +94,8 @@ export async function POST(req: NextRequest) {
 
     const info = db
       .prepare(
-        `INSERT INTO listings (url, domain, handle, description, bid_amount, clicks, clicks_this_hour, rank, created_at, updated_at, paid)
-         VALUES (?, ?, ?, ?, ?, 0, 0, 0, ?, ?, 0)`
+        `INSERT INTO listings (url, domain, handle, description, bid_amount, clicks, clicks_this_hour, rank, created_at, updated_at, category, paid)
+         VALUES (?, ?, ?, ?, ?, 0, 0, 0, ?, ?, ?, 0)`
       )
       .run(
         url,
@@ -97,7 +104,8 @@ export async function POST(req: NextRequest) {
         body.description && typeof body.description === "string" ? body.description.trim().slice(0, 240) : null,
         amount,
         now,
-        now
+        now,
+        effectiveCategory
       );
     listingId = Number(info.lastInsertRowid);
   }

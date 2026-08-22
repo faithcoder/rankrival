@@ -47,8 +47,8 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "WebSite", name: "RankRival", url: "https://rankrival.lol", description: "A transparent paid public leaderboard for products and profiles." }).replace(/</g, "\\u003c") }} />
         <Providers>
           <Header />
-          <main className="mx-auto max-w-[1220px] px-4">{children}</main>
-          <footer className="mx-auto max-w-[1220px] px-4 pb-10 pt-14">
+          <main className="mx-auto max-w-[1500px] px-4 sm:px-6">{children}</main>
+          <footer className="mx-auto max-w-[1500px] px-4 pb-10 pt-14 sm:px-6">
             <div className="flex flex-col items-start justify-between gap-2 border-t border-neutral-200 pt-6 text-xs text-neutral-400 dark:border-neutral-800 dark:text-neutral-500 sm:flex-row sm:items-center">
               <span>
                 © {new Date().getFullYear()} rankrival.lol — the live paid leaderboard.

@@ -13,6 +13,7 @@ const sections = [
     "Taking #1 costs at least $5 more than the current top bid. Paying less still places you at the highest rank that bid can secure. Equal bids stay in the order placed—the older bid ranks higher.",
     "Enter the same website or @handle again to raise that listing. The new bid must be at least $1 above its current bid, and you pay only the difference. Someone else cannot take your listing by paying only that difference.",
     "App Store, Play Store, GitHub, and similar platform links are identified by their path, so separate apps do not share a bid. Tracking query strings are ignored.",
+    "Upvotes affect the Top Upvoted panel only. They never change Top Trend or paid leaderboard positions, which remain determined by hourly clicks and category bids respectively.",
   ]},
   { title: "What you can list", items: [
     "A product website or an X @handle.",
@@ -25,6 +26,11 @@ const sections = [
     "Your listing is public. Clicks go to the URL or profile you submitted, with RankRival attribution added to the outbound URL.",
     "A completed, verified payment is what claims the rank.",
     "Payments are one-time and non-refundable except where required by law.",
+  ]},
+  { title: "How upvotes work", items: [
+    "Visitors can upvote a listing without registering. RankRival stores a long-lived anonymous voter cookie so one browser can cast only one upvote per listing.",
+    "Clicking an active upvote again removes it. Clearing cookies or using another browser may create another anonymous identity, so automated rate limits and abuse checks also apply.",
+    "Top Upvoted favors newer upvotes over older votes. Upvotes do not affect Top Trend, category rank, bid price, or ownership of a listing.",
   ]},
 ];
 
