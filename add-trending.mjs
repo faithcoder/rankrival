@@ -2,23 +2,15 @@ import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
 
-const dbPath = path.join(process.cwd(), "data", "rankrival.db");
+const dbPath = path.join(process.cwd(), "data", "bidboard.db");
 const db = new Database(dbPath);
 db.pragma("journal_mode = WAL");
 
-// Load all trending JSON files
-const files = ["trending1.json", "trending2.json", "trending3.json"];
-let products = [];
-for (const f of files) {
-  const data = JSON.parse(fs.readFileSync(path.join(process.cwd(), f), "utf-8"));
-  products.push(...data);
-}
+const products = JSON.parse(fs.readFileSync(path.join(process.cwd(), "trending.json"), "utf-8"));
 
-// Get existing URLs to avoid duplicates
-const existing = db.prepare("SELECT url FROM listings").all().map(r => r.url);
-const newProducts = products.filter(p => !existing.includes(p.url));
-
-console.log(`Found ${newProducts.length} new products to add (${products.length - newProducts.length} duplicates skipped)`);
+// Get current max bid to place trending products at the top
+const maxBid = db.prepare("SELECT MAX(bid_amount) as m FROM listings WHERE paid = 1").get();
+const startBid = maxBid ? maxBid.m + 500 : 5000;
 
 const now = Date.now();
 const mins = 60_000;
@@ -36,12 +28,29 @@ const insertEvent = db.prepare(`
 let added = 0;
 
 const insertAll = db.transaction(() => {
-  for (const p of newProducts) {
-    const domain = new URL(p.url).hostname.replace("www.", "");
-    const bid = Math.floor(Math.random() * 45) + 5; // $5-$49
-    const clicks = Math.floor(bid * (6 + Math.random() * 10));
-    const cph = Math.max(1, Math.floor(clicks / (24 + Math.random() * 48)));
-    const minsAgo = Math.floor(Math.random() * 7 * 24 * 60);
+  for (let i = 0; i < products.length; i++) {
+    const p = products[i];
+    let domain;
+    try {
+      domain = new URL(p.url).hostname.replace("www.", "");
+    } catch {
+      console.log(`Skipping invalid URL: ${p.url}`);
+      continue;
+    }
+
+    // Check if already exists
+    const existing = db.prepare("SELECT id FROM listings WHERE domain = ?").get(domain);
+    if (existing) {
+      console.log(`Skipping ${domain} — already exists`);
+      continue;
+    }
+
+    // Trending products get high bids, decreasing by rank
+    const bid = startBid - i * 100;
+    const clicks = Math.floor(bid * (10 + Math.random() * 15));
+    const cph = Math.max(5, Math.floor(clicks / (12 + Math.random() * 24)));
+    const minsAgo = Math.floor(Math.random() * 48 * 60); // 0-2 days
+
     const created = new Date(now - minsAgo * mins).toISOString();
 
     const info = insert.run({
@@ -65,18 +74,19 @@ const insertAll = db.transaction(() => {
   const rows = db
     .prepare("SELECT id FROM listings WHERE paid = 1 ORDER BY bid_amount DESC, created_at ASC")
     .all();
+
   const updateRank = db.prepare("UPDATE listings SET rank = ? WHERE id = ?");
   rows.forEach((row, i) => updateRank.run(i + 1, row.id));
 
-  // Update total revenue
-  const total = db.prepare("SELECT SUM(bid_amount) as total FROM listings WHERE paid = 1").get();
+  // Update site stats
+  const totalRevenue = db.prepare("SELECT SUM(bid_amount) as s FROM listings WHERE paid = 1").get();
   db.prepare("UPDATE site_stats SET total_revenue = ?, updated_at = ? WHERE id = 1")
-    .run(total.total, new Date().toISOString());
+    .run(totalRevenue.s, new Date().toISOString());
 });
 
 insertAll();
 
-const count = db.prepare("SELECT COUNT(*) as c FROM listings").get();
-console.log(`Added ${added} new listings. Total: ${count.c}`);
+const count = db.prepare("SELECT COUNT(*) as c FROM listings WHERE paid = 1").get();
+console.log(`Added ${added} trending products. Total listings: ${count.c}`);
 
 db.close();

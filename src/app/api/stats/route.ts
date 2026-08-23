@@ -1,4 +1,5 @@
 import { getDb, getSiteStats } from "@/lib/db";
+import { getFakeVisitors } from "@/lib/fake-stats";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -55,7 +56,7 @@ export async function GET() {
     .slice(0, 8);
 
   return Response.json({
-    total_visitors: stats.total_visitors,
+    total_visitors: getFakeVisitors(),
     total_revenue: stats.total_revenue,
     total_listings: listingCount.c,
     total_clicks: totalClicks.c,

@@ -148,122 +148,93 @@ function seedIfEmpty(db: Database.Database): void {
   const now = Date.now();
   const mins = 60_000;
 
-  const seeds: Array<{
-    url: string;
-    domain: string;
-    handle: string;
-    description: string;
-    bid: number;
-    clicks: number;
-    cph: number;
-    minsAgo: number;
-  }> = [
-    {
-      url: "https://notion.so",
-      domain: "notion.so",
-      handle: "notion",
-      description: "All-in-one workspace for notes, docs, and projects.",
-      bid: 5000,
-      clicks: 48213,
-      cph: 96,
-      minsAgo: 45,
-    },
-    {
-      url: "https://linear.app",
-      domain: "linear.app",
-      handle: "linear",
-      description: "The issue tracking tool you'll actually enjoy using.",
-      bid: 3500,
-      clicks: 31204,
-      cph: 71,
-      minsAgo: 120,
-    },
-    {
-      url: "https://vercel.com",
-      domain: "vercel.com",
-      handle: "vercel",
-      description: "Deploy frontend apps at the speed of thought.",
-      bid: 2800,
-      clicks: 26980,
-      cph: 58,
-      minsAgo: 300,
-    },
-    {
-      url: "https://supabase.com",
-      domain: "supabase.com",
-      handle: "supabase",
-      description: "The open source Firebase alternative.",
-      bid: 2000,
-      clicks: 19811,
-      cph: 44,
-      minsAgo: 600,
-    },
-    {
-      url: "https://stripe.com",
-      domain: "stripe.com",
-      handle: "stripe",
-      description: "Payments infrastructure for the internet.",
-      bid: 1500,
-      clicks: 15430,
-      cph: 33,
-      minsAgo: 900,
-    },
-    {
-      url: "https://railway.app",
-      domain: "railway.app",
-      handle: "railway",
-      description: "Deploy infrastructure in seconds, not sprints.",
-      bid: 1200,
-      clicks: 9877,
-      cph: 21,
-      minsAgo: 1440,
-    },
-    {
-      url: "https://raycast.com",
-      domain: "raycast.com",
-      handle: "raycast",
-      description: "A blazingly fast launcher for your Mac.",
-      bid: 800,
-      clicks: 7201,
-      cph: 15,
-      minsAgo: 1800,
-    },
-    {
-      url: "https://excalidraw.com",
-      domain: "excalidraw.com",
-      handle: "excalidraw",
-      description: "Virtual whiteboard for sketching hand-drawn like diagrams.",
-      bid: 500,
-      clicks: 4102,
-      cph: 9,
-      minsAgo: 2160,
-    },
-  ];
+  // Load products from JSON files
+  type ProductEntry = { url: string; name: string; description: string; category?: string };
+  type MacAppEntry = { url: string; name: string; description: string; bid: number; clicks: number };
+
+  let allSeeds: Array<{ url: string; domain: string; handle: string | null; description: string; bid: number; clicks: number; cph: number; minsAgo: number }> = [];
+  const seen = new Set<string>();
+
+  // Helper to extract domain
+  function getDomain(url: string): string {
+    try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return ""; }
+  }
+
+  // 1. Mac apps (from bidmacapps.json)
+  try {
+    const macapps: MacAppEntry[] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "bidmacapps.json"), "utf-8"));
+    for (const app of macapps) {
+      const domain = getDomain(app.url);
+      if (!domain || seen.has(domain)) continue;
+      seen.add(domain);
+      allSeeds.push({
+        url: app.url, domain, handle: null, description: app.description,
+        bid: app.bid, clicks: app.clicks, cph: Math.max(1, Math.floor(app.clicks / 12)),
+        minsAgo: Math.floor(Math.random() * 72 * 60),
+      });
+    }
+  } catch { /* file not found — skip */ }
+
+  // 2. Trending products (from trending.json) — highest bids
+  try {
+    const trending: ProductEntry[] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "trending.json"), "utf-8"));
+    for (let i = 0; i < trending.length; i++) {
+      const p = trending[i];
+      const domain = getDomain(p.url);
+      if (!domain || seen.has(domain)) continue;
+      seen.add(domain);
+      const bid = 8000 - i * 200;
+      const clicks = Math.floor(bid * (10 + Math.random() * 15));
+      allSeeds.push({
+        url: p.url, domain, handle: null, description: p.description,
+        bid, clicks, cph: Math.max(5, Math.floor(clicks / 16)),
+        minsAgo: Math.floor(Math.random() * 48 * 60),
+      });
+    }
+  } catch { /* file not found — skip */ }
+
+  // 3. Original products (from products.json) — tiered bids
+  try {
+    const products: ProductEntry[] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "products.json"), "utf-8"));
+    for (let i = 0; i < products.length; i++) {
+      const p = products[i];
+      const domain = getDomain(p.url);
+      if (!domain || seen.has(domain)) continue;
+      seen.add(domain);
+      let bid: number;
+      if (i < 3) bid = 3000 + Math.floor(Math.random() * 2000);
+      else if (i < 8) bid = 1500 + Math.floor(Math.random() * 1499);
+      else if (i < 18) bid = 500 + Math.floor(Math.random() * 999);
+      else if (i < 38) bid = 100 + Math.floor(Math.random() * 399);
+      else if (i < 63) bid = 25 + Math.floor(Math.random() * 74);
+      else bid = 5 + Math.floor(Math.random() * 19);
+      const clicks = Math.floor(bid * (8 + Math.random() * 12));
+      allSeeds.push({
+        url: p.url, domain, handle: null, description: p.description,
+        bid, clicks, cph: Math.max(1, Math.floor(clicks / (24 + Math.random() * 48))),
+        minsAgo: Math.floor(Math.random() * 7 * 24 * 60),
+      });
+    }
+  } catch { /* file not found — skip */ }
+
+  if (allSeeds.length === 0) return;
 
   const insert = db.prepare(`
     INSERT INTO listings (url, domain, handle, description, bid_amount, clicks, clicks_this_hour, rank, created_at, updated_at, paid)
     VALUES (@url, @domain, @handle, @description, @bid, @clicks, @cph, 0, @created_at, @updated_at, 1)
   `);
 
-  const insertEvent = db.prepare(`
-    INSERT INTO bid_events (listing_id, amount, previous_amount, created_at)
-    VALUES (?, ?, ?, ?)
-  `);
+  const insertEvent = db.prepare(
+    "INSERT INTO bid_events (listing_id, amount, previous_amount, created_at) VALUES (?, ?, ?, ?)"
+  );
 
   const insertNow = db.transaction(() => {
     let totalRevenue = 0;
-    for (const s of seeds) {
+    for (const s of allSeeds) {
       const created = new Date(now - s.minsAgo * mins).toISOString();
       const info = insert.run({
-        url: s.url,
-        domain: s.domain,
-        handle: s.handle,
-        description: s.description,
-        bid: s.bid,
-        clicks: s.clicks,
-        cph: s.cph,
-        created_at: created,
-        updated_at: created,
+        url: s.url, domain: s.domain, handle: s.handle, description: s.description,
+        bid: s.bid, clicks: s.clicks, cph: s.cph, created_at: created, updated_at: created,
       });
       const id = Number(info.lastInsertRowid);
       insertEvent.run(id, s.bid, 0, created);
@@ -272,7 +243,7 @@ function seedIfEmpty(db: Database.Database): void {
 
     db.prepare(
       "INSERT INTO site_stats (total_visitors, total_revenue, updated_at) VALUES (?, ?, ?)"
-    ).run(147392, totalRevenue, new Date().toISOString());
+    ).run(3400, totalRevenue, new Date().toISOString());
   });
 
   insertNow();

@@ -1,0 +1,18 @@
+[
+  {"url": "https://getdroppy.app/", "name": "Droppy", "description": "File tray, clipboard manager, lock screen, music controls and live activities for Mac.", "bid": 70, "clicks": 95},
+  {"url": "https://blurdata.app/", "name": "BlurData", "description": "Auto-redact PDFs, screenshots and images on Mac. Detects sensitive info. 100% offline.", "bid": 62, "clicks": 83},
+  {"url": "https://screen.movie/", "name": "Screen Movie", "description": "Screen recorder and video editor for macOS with animations, music and 4K export.", "bid": 60, "clicks": 35},
+  {"url": "https://mailreply.ai/", "name": "MailReply", "description": "Mac menu bar AI email reply. One keystroke, reviewed reply in any app, any language.", "bid": 36, "clicks": 6},
+  {"url": "https://www.vinaa.ai/", "name": "Vinaa", "description": "Cloud and local AI models in one fast, private, native Mac app.", "bid": 35, "clicks": 54},
+  {"url": "https://teraconvert.com/", "name": "TeraConvert", "description": "Convert images, video, audio, and documents locally. 800+ conversions on Mac.", "bid": 34, "clicks": 40},
+  {"url": "https://actionclip.app/", "name": "ActionClip", "description": "Fast selected-text actions, iCloud sync, local AI, and custom workflows for Mac.", "bid": 33, "clicks": 19},
+  {"url": "https://codexqr.com/", "name": "Codex QR", "description": "Professional QR code scanner and generator for desktop. Scan from screen or webcam.", "bid": 32, "clicks": 48},
+  {"url": "https://screencharm.com/", "name": "Screen Charm", "description": "Mac screen recorder with smart zoom, webcam overlay, motion blur, 4K export.", "bid": 25, "clicks": 14},
+  {"url": "https://repostpro.app/", "name": "Reposted", "description": "Anonymous Instagram story viewer and repost tool. Save reels and stories in HD.", "bid": 11, "clicks": 28},
+  {"url": "https://heydesign.ai/", "name": "Hey Design AI", "description": "350 prompts and styles to build SaaS sites that drive paid conversions.", "bid": 10, "clicks": 3},
+  {"url": "https://www.localchat.app/", "name": "LocalChat", "description": "Offline privacy-safe AI chat application for macOS.", "bid": 9, "clicks": 31},
+  {"url": "https://www.voiceify.dev/", "name": "Voiceify", "description": "Turn speech into polished prompts, emails, messages in any Mac app. AI included.", "bid": 8, "clicks": 13},
+  {"url": "https://clientsync.net/", "name": "ClientSync", "description": "Monday.com solutions, integrations, project management and CRM tools.", "bid": 8, "clicks": 8},
+  {"url": "https://meethangar.com/", "name": "Hangar", "description": "Find, run, protect, clean and archive local dev projects from your menu bar.", "bid": 7, "clicks": 31},
+  {"url": "https://www.idlemac.com/", "name": "IdleMac", "description": "Track and visualize your Mac usage patterns and productivity.", "bid": 5, "clicks": 12}
+]
