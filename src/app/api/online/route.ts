@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { getDb, getSiteStats } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,11 +25,11 @@ function prune(): void {
 
 export async function GET() {
   prune();
-  return Response.json({ online: sessions().size });
+  return Response.json({ online: sessions().size, total_visitors: getSiteStats(getDb()).total_visitors });
 }
 
 export async function POST(req: NextRequest) {
-  let body: { sessionId?: string } = {};
+  let body: { sessionId?: string; visitId?: string } = {};
   try {
     body = await req.json();
   } catch {
@@ -40,5 +41,21 @@ export async function POST(req: NextRequest) {
   sessions().set(sessionId, Date.now());
   prune();
 
-  return Response.json({ online: sessions().size });
+  const visitId = typeof body.visitId === "string" && /^[a-zA-Z0-9_-]{12,100}$/.test(body.visitId)
+    ? body.visitId
+    : null;
+  const db = getDb();
+  if (visitId) {
+    const inserted = db.prepare(
+      "INSERT OR IGNORE INTO visitor_events (visit_id, created_at) VALUES (?, ?)"
+    ).run(visitId, new Date().toISOString());
+    if (inserted.changes === 1) {
+      const stats = getSiteStats(db);
+      db.prepare(
+        "UPDATE site_stats SET total_visitors = total_visitors + 1, updated_at = ? WHERE id = ?"
+      ).run(new Date().toISOString(), stats.id);
+    }
+  }
+
+  return Response.json({ online: sessions().size, total_visitors: getSiteStats(db).total_visitors });
 }

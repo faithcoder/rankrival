@@ -51,7 +51,10 @@ function ensureUpvoteSchema(db: Database.Database): void {
 }
 
 function createDb(): Database.Database {
-  const dataDir = path.join(process.cwd(), "data");
+  const configuredDataDir = process.env.RANKRIVAL_DATA_DIR?.trim();
+  const dataDir = configuredDataDir
+    ? path.resolve(configuredDataDir)
+    : path.join(process.cwd(), "data");
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }
@@ -102,6 +105,12 @@ function createDb(): Database.Database {
 
     CREATE INDEX IF NOT EXISTS idx_listing_upvotes_listing ON listing_upvotes(listing_id);
     CREATE INDEX IF NOT EXISTS idx_listing_upvotes_created ON listing_upvotes(created_at);
+
+    CREATE TABLE IF NOT EXISTS visitor_events (
+      visit_id TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_visitor_events_created ON visitor_events(created_at);
 
     CREATE TABLE IF NOT EXISTS site_stats (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

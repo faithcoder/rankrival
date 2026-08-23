@@ -29,6 +29,7 @@ interface StatsResponse {
 }
 interface OnlineResponse {
   online: number;
+  total_visitors: number;
 }
 
 export default function HomePage() {
@@ -60,23 +61,14 @@ export default function HomePage() {
   const [pageSize, setPageSize] = useState<3 | 10 | 20>(20);
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [visitorTotal, setVisitorTotal] = useState<number | null>(null);
 
   useEffect(() => {
-    let sessionId = localStorage.getItem("rankrival_sid");
-    if (!sessionId) {
-      sessionId =
-        Math.random().toString(36).slice(2) + Date.now().toString(36);
-      localStorage.setItem("rankrival_sid", sessionId);
-    }
-    const beat = () =>
-      fetch("/api/online", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
-      }).catch(() => {});
-    beat();
-    const id = setInterval(beat, 30000);
-    return () => clearInterval(id);
+    const storedTotal = Number(sessionStorage.getItem("rankrival_visitor_total"));
+    if (Number.isFinite(storedTotal) && storedTotal >= 0) setVisitorTotal(storedTotal);
+    const updateVisitors = (event: Event) => setVisitorTotal((event as CustomEvent<number>).detail);
+    window.addEventListener("rankrival:visitors", updateVisitors);
+    return () => window.removeEventListener("rankrival:visitors", updateVisitors);
   }, []);
 
   const listings = listingsData?.listings ?? [];
@@ -169,7 +161,7 @@ export default function HomePage() {
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-7">
           <StatsBanner
             online={onlineData?.online ?? 0}
-            visitors={statsData?.total_visitors ?? 0}
+            visitors={visitorTotal ?? onlineData?.total_visitors ?? statsData?.total_visitors ?? 0}
             listings={totalListingCount || listings.length}
           />
           <BidSection topBid={topBid} preset={preset} onOutbid={handleOutbid} activeCategory={activeCategory} />

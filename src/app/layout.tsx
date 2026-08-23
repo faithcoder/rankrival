@@ -4,6 +4,7 @@ import Link from "next/link";
 import "./globals.css";
 import Providers from "./providers";
 import Header from "@/components/Header";
+import VisitorTracker from "@/components/VisitorTracker";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -46,6 +47,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "WebSite", name: "RankRival", url: "https://rankrival.lol", description: "A transparent public leaderboard for products and profiles." }).replace(/</g, "\\u003c") }} />
         <Providers>
+          <VisitorTracker />
           <Header />
           <main className="mx-auto max-w-[1500px] px-4 sm:px-6">{children}</main>
           <footer className="mx-auto max-w-[1500px] px-4 pb-10 pt-14 sm:px-6">
