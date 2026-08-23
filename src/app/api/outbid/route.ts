@@ -59,13 +59,13 @@ export async function POST(req: NextRequest) {
   const identityValue = identityColumn === "url" ? url : domain;
   const identityListings = db.prepare(`SELECT * FROM listings WHERE ${identityColumn} = ? ORDER BY paid DESC, updated_at DESC`).all(identityValue) as Listing[];
   const existing = identityListings.find((listing) => listing.paid === 1);
-  const freeListing = !existing && isFreeListingActive();
-  const effectiveAmount = freeListing ? MIN_BID : amount;
+  const freeListing = isFreeListingActive();
+  const effectiveAmount = amount;
   const effectiveCategory = existing?.category || requestedCategory;
   const pending = identityListings.find((listing) => listing.paid === 0);
   if (pending) {
     const isFresh = Date.now() - new Date(pending.updated_at).getTime() < 30 * 60 * 1000;
-    if (isFresh) return Response.json({ error: "A payment is already pending for this listing. Please try again later." }, { status: 409 });
+    if (isFresh) return Response.json({ error: "An update is already pending for this listing. Please try again later." }, { status: 409 });
     db.prepare("DELETE FROM listings WHERE id = ? AND paid = 0").run(pending.id);
   }
 
@@ -114,14 +114,14 @@ export async function POST(req: NextRequest) {
   }
 
   if (freeListing) {
-    if (!finalizeFreeListing(db, listingId, MIN_BID)) {
+    if (!finalizeFreeListing(db, listingId, effectiveAmount, previousAmount)) {
       db.prepare("DELETE FROM listings WHERE id = ? AND paid = 0").run(listingId);
       return Response.json({ error: "Unable to activate the free listing" }, { status: 500 });
     }
     recalculateRanks(db);
     return Response.json({
       free: true,
-      url: `/success?free=1&domain=${encodeURIComponent(domain)}&amount=${MIN_BID}`,
+      url: `/success?free=1&id=${listingId}&domain=${encodeURIComponent(domain)}&amount=${effectiveAmount}`,
     });
   }
 

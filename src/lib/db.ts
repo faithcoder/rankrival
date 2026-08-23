@@ -345,18 +345,21 @@ export function finalizePayment(
 export function finalizeFreeListing(
   db: Database.Database,
   listingId: number,
-  promotionalAmount = 500
+  amount: number,
+  previousAmount = 0
 ): boolean {
   return db.transaction(() => {
     const listing = db.prepare("SELECT * FROM listings WHERE id = ?").get(listingId) as Listing | undefined;
-    if (!listing || listing.paid === 1 || promotionalAmount !== 500) return false;
+    if (!listing || amount <= previousAmount || amount < 500 || amount > 99_999_900 || amount % 100 !== 0) return false;
+    if (listing.paid === 1 && listing.bid_amount !== previousAmount) return false;
+    if (listing.paid === 0 && previousAmount !== 0) return false;
 
     db.prepare(
       "UPDATE listings SET bid_amount = ?, paid = 1, updated_at = ? WHERE id = ?"
-    ).run(promotionalAmount, new Date().toISOString(), listingId);
+    ).run(amount, new Date().toISOString(), listingId);
     db.prepare(
-      "INSERT INTO bid_events (listing_id, amount, previous_amount, created_at) VALUES (?, ?, 0, ?)"
-    ).run(listingId, promotionalAmount, new Date().toISOString());
+      "INSERT INTO bid_events (listing_id, amount, previous_amount, created_at) VALUES (?, ?, ?, ?)"
+    ).run(listingId, amount, previousAmount, new Date().toISOString());
     return true;
   })();
 }

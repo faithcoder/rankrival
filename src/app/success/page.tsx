@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { formatMoney } from "@/lib/utils";
+import ShareListing from "@/components/ShareListing";
 
 function SuccessContent() {
   const params = useSearchParams();
@@ -11,6 +12,7 @@ function SuccessContent() {
   const amountRaw = params.get("amount");
   const amount = amountRaw ? Number(amountRaw) : 0;
   const free = params.get("free") === "1";
+  const id = Number(params.get("id"));
 
   return (
     <div className="mx-auto flex max-w-[560px] flex-col items-center gap-5 py-16 text-center">
@@ -24,7 +26,7 @@ function SuccessContent() {
         <h1 className="text-3xl font-bold tracking-tight">You&apos;re on the board!</h1>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
           {domain} has been listed{amount > 0 ? ` at ${formatMoney(amount)}` : ""}.
-          {free ? " No payment was charged during the launch promotion." : ""} Your rank is live and clicks are being tracked.
+          {free ? " No payment was charged." : ""} Your rank is live and clicks are being tracked.
         </p>
       </div>
 
@@ -42,6 +44,7 @@ function SuccessContent() {
           See stats
         </Link>
       </div>
+      {Number.isInteger(id) && id > 0 && <ShareListing id={id} domain={domain} />}
     </div>
   );
 }

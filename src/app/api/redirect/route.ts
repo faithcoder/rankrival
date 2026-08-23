@@ -8,7 +8,10 @@ export async function GET(req: NextRequest) {
   const db = getDb();
   const id = req.nextUrl.searchParams.get("id");
   const to = req.nextUrl.searchParams.get("to");
-  const referrer = req.headers.get("referer") || null;
+  const referral = req.nextUrl.searchParams.get("ref");
+  const referrer = referral && /^[a-zA-Z0-9_-]{1,80}$/.test(referral)
+    ? `ref:${referral}`
+    : req.headers.get("referer") || null;
 
   let listing: Listing | undefined;
 

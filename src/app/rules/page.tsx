@@ -13,8 +13,8 @@ const sections = [
     "Taking #1 costs at least $5 more than the current top bid. Paying less still places you at the highest rank that bid can secure. Equal bids stay in the order placed—the older bid ranks higher.",
     "Enter the same website or @handle again to raise that listing. The new bid must be at least $1 above its current bid, and you pay only the difference. Someone else cannot take your listing by paying only that difference.",
     "App Store, Play Store, GitHub, and similar platform links are identified by their path, so separate apps do not share a bid. Tracking query strings are ignored.",
-    "Upvotes affect the Top Upvoted panel only. They never change Top Trend or paid leaderboard positions, which remain determined by hourly clicks and category bids respectively.",
-    "Temporary promotions may waive payment for new listings. Promotional listings receive the advertised fixed bid amount; upgrading an existing listing still requires payment.",
+    "Upvotes affect the Top Upvoted panel only. They never change Top Trend or leaderboard positions, which remain determined by hourly clicks and category bids respectively.",
+    "Listings and rank updates are currently free. The displayed bid still determines position and all normal bid limits and ranking rules apply.",
   ]},
   { title: "What you can list", items: [
     "A product website or an X @handle.",
@@ -25,7 +25,7 @@ const sections = [
   ]},
   { title: "After you pay", items: [
     "Your listing is public. Clicks go to the URL or profile you submitted, with RankRival attribution added to the outbound URL.",
-    "A completed, verified payment is what claims the rank.",
+    "Submitting a valid listing claims the rank while free mode is active. Payment verification will apply only after paid mode is announced and enabled.",
     "Payments are one-time and non-refundable except where required by law.",
   ]},
   { title: "How upvotes work", items: [
@@ -41,7 +41,7 @@ export default function RulesPage() {
       <header className="mb-12">
         <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-400">RankRival policy</p>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Rules</h1>
-        <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">RankRival is a public leaderboard. There are no ads, API keys, or revenue share. You pay to stand above everyone else. <strong className="text-slate-950 dark:text-white">Rank is the bid—nothing else.</strong></p>
+        <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">RankRival is a public leaderboard. There are no ads, API keys, or revenue share. Listings are currently free. <strong className="text-slate-950 dark:text-white">Rank is the bid—nothing else.</strong></p>
       </header>
       <div className="space-y-12">
         {sections.map((section) => {

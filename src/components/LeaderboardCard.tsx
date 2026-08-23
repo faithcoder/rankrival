@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { formatMoney, formatClicks, timeAgo } from "@/lib/utils";
 import { categoryLabel } from "@/lib/categories";
+import ShareListing from "@/components/ShareListing";
 
 export interface ListingItem {
   id: number;
@@ -64,7 +65,7 @@ export default function LeaderboardCard({
 
   return (
     <div
-      className={`fade-up flex items-center gap-4 rounded-2xl border p-4 shadow-sm transition-colors ${style.surface} ${style.ring} ${
+      className={`fade-up grid grid-cols-[auto_auto_minmax(0,1fr)] items-center gap-x-3 gap-y-3 rounded-2xl border p-4 shadow-sm transition-colors sm:flex sm:gap-4 ${style.surface} ${style.ring} ${
         isTop ? "border" : "border-neutral-200 dark:border-neutral-800"
       }`}
       style={{ animationDelay: `${Math.min(listing.rank, 10) * 40}ms` }}
@@ -105,16 +106,16 @@ export default function LeaderboardCard({
             {listing.url.replace(/^https?:\/\//, "")}
           </p>
         )}
-        <div className="mt-1 flex items-center gap-2 text-xs text-neutral-400">
-          <span className="max-w-36 truncate rounded-md bg-blue-50 px-1.5 py-0.5 font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-400">
+          <span className="max-w-full truncate rounded-md bg-blue-50 px-1.5 py-0.5 font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300 sm:max-w-36">
             {categoryLabel(listing.category)}
           </span>
-          <span>listed {timeAgo(listing.created_at)}</span>
+          <span className="whitespace-nowrap">listed {timeAgo(listing.created_at)}</span>
           <span className="relative flex h-2 w-2" aria-hidden="true">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-70 motion-reduce:animate-none" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
           </span>
-          <span className="number font-medium text-neutral-600 dark:text-neutral-300">
+          <span className="number whitespace-nowrap font-medium text-neutral-600 dark:text-neutral-300">
             {formatClicks(listing.clicks)} clicks
           </span>
           <button
@@ -134,17 +135,20 @@ export default function LeaderboardCard({
         </div>
       </div>
 
-      <div className="flex shrink-0 flex-col items-end gap-2">
+      <div className="col-span-2 col-start-2 flex min-w-0 shrink-0 items-center justify-between gap-3 sm:flex-col sm:items-end sm:gap-2">
         <span className={`number text-xl font-bold ${isTop ? style.label : ""}`}>
           {formatMoney(listing.bid_amount)}
         </span>
-        <button
-          type="button"
-          onClick={() => onClaim(listing)}
-          className="rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-white"
-        >
-          claim this rank
-        </button>
+        <div className="flex items-center gap-2">
+          <ShareListing id={listing.id} domain={listing.domain} compact />
+          <button
+            type="button"
+            onClick={() => onClaim(listing)}
+            className="cursor-pointer whitespace-nowrap rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-white"
+          >
+            claim this rank
+          </button>
+        </div>
       </div>
     </div>
   );

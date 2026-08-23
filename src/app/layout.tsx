@@ -19,16 +19,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://rankrival.lol"),
-  title: { default: "RankRival — The live paid leaderboard", template: "%s | RankRival" },
+  title: { default: "RankRival — The live product leaderboard", template: "%s | RankRival" },
   description:
-    "Bid real money to rank your product, website, or profile on a public leaderboard. Higher bid, higher rank.",
+    "Rank and discover products, websites, and profiles on a transparent public leaderboard.",
   alternates: { canonical: "/" },
-  keywords: ["product leaderboard", "startup leaderboard", "paid leaderboard", "discover products", "RankRival"],
+  keywords: ["product leaderboard", "startup leaderboard", "website ranking", "discover products", "RankRival"],
   authors: [{ name: "RankRival", url: "https://rankrival.lol" }],
   creator: "RankRival",
   publisher: "RankRival",
-  openGraph: { type: "website", siteName: "RankRival", title: "RankRival — The live paid leaderboard", description: "Discover products ranked transparently by their live bid.", url: "/" },
-  twitter: { card: "summary", title: "RankRival — The live paid leaderboard", description: "Discover products ranked transparently by their live bid." },
+  openGraph: { type: "website", siteName: "RankRival", title: "RankRival — The live product leaderboard", description: "Discover products ranked transparently by their live bid.", url: "/" },
+  twitter: { card: "summary", title: "RankRival — The live product leaderboard", description: "Discover products ranked transparently by their live bid." },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
 };
 
@@ -44,14 +44,14 @@ export default function RootLayout({
       className={`${dmSans.variable} ${geistMono.variable}`}
     >
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "WebSite", name: "RankRival", url: "https://rankrival.lol", description: "A transparent paid public leaderboard for products and profiles." }).replace(/</g, "\\u003c") }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "WebSite", name: "RankRival", url: "https://rankrival.lol", description: "A transparent public leaderboard for products and profiles." }).replace(/</g, "\\u003c") }} />
         <Providers>
           <Header />
           <main className="mx-auto max-w-[1500px] px-4 sm:px-6">{children}</main>
           <footer className="mx-auto max-w-[1500px] px-4 pb-10 pt-14 sm:px-6">
             <div className="flex flex-col items-start justify-between gap-2 border-t border-neutral-200 pt-6 text-xs text-neutral-400 dark:border-neutral-800 dark:text-neutral-500 sm:flex-row sm:items-center">
               <span>
-                © {new Date().getFullYear()} rankrival.lol — the live paid leaderboard.
+                © {new Date().getFullYear()} rankrival.lol — the live product leaderboard.
               </span>
               <span className="flex gap-4">
                 <Link href="/about" className="hover:text-neutral-700 dark:hover:text-neutral-300">
